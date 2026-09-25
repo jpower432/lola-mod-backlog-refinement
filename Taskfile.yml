@@ -1,0 +1,22 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task --list-all
+
+  install:
+    desc: Install the backlog-refinement module with lola
+    vars:
+      ASSISTANT: '{{.ASSISTANT | default "claude-code"}}'
+      SCOPE: '{{.SCOPE | default "user"}}'
+    requires:
+      vars:
+        - name: SCOPE
+          enum: [user, project]
+    preconditions:
+      - sh: command -v lola
+        msg: 'lola is required; install it from https://docs.getlola.dev/'
+    cmds:
+      - lola mod add --name backlog-refinement backlog-refinement
+      - lola install backlog-refinement -a {{.ASSISTANT}} --scope {{.SCOPE}} {{.CLI_ARGS}}
